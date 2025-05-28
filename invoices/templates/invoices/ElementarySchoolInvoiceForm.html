@@ -823,7 +823,7 @@
             }
         }
         fetch('https://script.google.com/macros/s/AKfycbwvXDs4ArQ0Y147P3h-8PoV4tABqouUVV5_PbtOe9ekPI25CesqgpNuxfAaFN0cMKFE/exec', {
-            method: 'POST',
+            //method: 'POST',
             body: formData,
         })
         .then(response => {
@@ -845,5 +845,6 @@
     });
 
     </script>
+<script src="{% static 'SheetScript.js' %}"></script>
 </body>
 </html>
