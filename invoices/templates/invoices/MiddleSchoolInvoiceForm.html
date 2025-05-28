@@ -1,0 +1,846 @@
+{% load static %}
+<script src="{% static 'SheetScript.js' %}"></script>
+
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>فرم اطلاعات فاکتورها (متوسطه یک)</title> 
+<!--     <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  
+    <link
+      rel="stylesheet"
+ href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script
+        type="text/javascript"
+        src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"
+      ></script>
+      <link rel="stylesheet" href="./styles.css" />
+    
+    <style>
+      
+        :root {
+            --primary-color: #4CAF50;
+            --hover-primary-color: #228B22;
+            --danger-color: #f44336;
+            --hover-danger-color: #d32f2f;
+            --background-color: #1e1e1e;
+            --card-background: rgba(255, 255, 255, 0.1);
+            --item-background: rgba(255, 255, 255, 0.05);
+            --white-color: #ffffff;
+            --border-color: #444;
+        }
+
+      body {
+          font-family: 'Amiri', sans-serif;
+          font-size: 20px;
+          direction: rtl;
+          padding: 20px; /* فاصله داخلی */
+          background-color: var(--background-color);
+          min-height: 100vh;
+          color: var(--white-color);
+          overflow: auto; /* اسکرول برای محتوای اضافی */
+      }
+      
+        .container {
+            max-width: 900px;
+            margin: auto; /* مرکز کردن عنصر */
+            background-color: var(--card-background);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); /* سایه ملایم */
+            border-radius: 12px;
+            padding: 50px;
+            margin-top: 50px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 60px;
+            color: var(--primary-color);
+            font-size: 2 rem;
+        }
+
+        .form-group.label-input {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+            flex: 1;
+        }
+
+         input, select, textarea {
+            flex: 3;
+            min-width: 0; /* برای جلوگیری از overflow */
+            max-width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color); /* حاشیه */
+            background-color: #333;
+            font-family: 'Amiri', sans-serif;
+            font-size: 20px;
+            color: var(--white-color);
+            transition: border-color 0.3s, box-shadow 0.3s; /* انیمیشن تغییر حاشیه و سایه */
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color); /* تغییر رنگ حاشیه در حالت تمرکز */
+            outline: none; /* حذف حاشیه */
+        }
+
+        input:hover, select:hover, textarea:hover {
+            box-shadow: 0 0 5px rgba(173, 216, 230, 0.8); /* سایه آبی روشن */
+            border-color: var(--primary-color); /* تغییر رنگ حاشیه */
+        }
+
+        button {
+            padding: 8px 10px;; /* فاصله داخلی در دکمه */
+            background-color: transparent; /* بک گراند شفاف */
+            color: var(--white-color); /* رنگ متن دکمه */
+            border: 1px solid #4CAF50; /* حاشیه سفید */
+            border-radius: 4px; 
+            cursor: pointer; /* تغییر نشانگر ماوس */
+            font-size: 20px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            margin-right: 10px;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Amiri', sans-serif;
+        }
+
+        button:hover {
+            background-color: rgba(128, 128, 128, 0.3); /* تغییر رنگ پس‌زمینه در حالت hover */
+            color: white;
+        }
+
+        .remove-btn {
+            margin-top: 10px;
+            background-color: transparent;
+            color: var(--white-color);
+        }
+
+        .remove-btn:hover {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: white;
+        }
+
+      
+        .item {
+            margin-top: 20px;
+            padding: 10px; /* فاصله داخلی */
+            border: 1px solid #ddd;
+            border-color : #FFFFFF;
+            border-radius: 6px;
+            background-color: var(--item-background);
+            font-family: 'Amiri', sans-serif;
+            animation: fadeIn 0.3s ease-in;
+        }
+      
+       .message-box {
+            display: none;
+            margin: auto;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* سایه ملایم برای بهتر دیده شدن */
+            transition: all 0.3s ease;
+        }
+      
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+      
+      
+         @media (max-width: 640px) {
+            .container {
+                padding: 15px; /* فاصله داخلی در نمایشگرهای کوچک */
+            }
+
+            h1 {
+                font-size: 24px; /* اندازه عنوان در نمایشگرهای کوچک */
+                margin-bottom: 30px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+           .form-group.label-input {
+                flex-direction: column; /* تغییر به ردیف عمودی */
+            }
+
+            input, select, textarea {
+                width: 100%; /* ورودی‌ها به تمام عرض دسترسی می‌یابند */
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+</html>
+<body>
+    <div class="container"> 
+        <h1>اطلاعات فاکتورها (متوسطه یک)</h1> 
+        <form id="invoiceForm">
+            <div class="form-group label-input">
+                <label for="invoiceNumber">شماره فاکتور:</label>
+                <input type="number" id="invoiceNumber" placeholder=" لطفا اعداد را به انگلیسی وارد کنید." name="invoiceNumber" required>
+            </div>
+ 
+
+            <div class="form-group label-input">
+    <label for="invoiceDate">تاریخ فاکتور:</label>
+    <input type="text" id="persianDatePicker" data-jdp placeholder=" تاریخ شمسی فاکتور را وارد کنید." data-jdp-only-date readonly name="invoiceDate"> 
+</div>
+        
+          
+            <div class="form-group label-input">
+                <label for="totalAmount">بهای کل فاکتور:</label>
+                <input type="number" id="totalAmount" placeholder=" بهای کل فاکتور را به ریال  وارد کنید." name="totalAmount" required>
+            </div>
+
+            <div id="itemsContainer"></div>
+            <button type="button" onclick="addItem()">افزودن قلم کالا</button> 
+
+            <div class="form-group label-input">
+                <label for="finalSupplierDetails">مشخصات فروشنده:</label>
+                <input type="text" id="finalSupplierDetails" name="finalSupplierDetails" required> 
+            </div>
+            <div class="form-group label-input">
+                <label for="finalDescription">توضیحات:</label>
+                <textarea id="finalDescription" name="finalDescription" rows="3"></textarea>
+            </div>
+            <button type="submit">ارسال</button>
+            <input type="hidden" id="submitTimestamp" name="submitTimestamp">
+          
+            <div id="message" style="display: none;" class="message-box">
+        </form>
+    </div>
+</div>
+  
+  
+    <script src="script.js"></script>
+    <script>
+        
+      $(document).ready(function() { 
+        jalaliDatepicker.startWatch({
+          minDate: "attr",
+          maxDate: "attr",
+          time: true,
+        });
+
+        });
+
+        let itemCount = 0;
+
+        function addItem() {
+            itemCount++;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            const itemNumber = itemCount; // استفاده از itemCount برای تعیین شماره قلم
+            itemDiv.id = `item-${itemNumber}`;
+           
+            itemDiv.innerHTML = `
+                <h5>قلم ${itemNumber}</h5>
+                <div class="form-group label-input">
+                    <label for="itemCount${itemNumber}">تعداد:</label>
+                    <input type="number" id="itemCount${itemNumber}" name="itemCount${itemNumber}" required>
+                </div>
+                <div class="form-group label-input">
+                    <label for="level${itemNumber}">پایه:</label>
+                    <select id="level${itemNumber}" name="level${itemNumber}" required>
+                        <option value="">انتخاب کنید.</option>
+                        <option value="هفتم">هفتم</option>
+                        <option value="هشتم">هشتم</option>
+                        <option value="نهم">نهم</option>
+                    </select>
+                </div>             
+                <div class="form-group label-input">
+                    <label for="invoiceType${itemNumber}">نوع فاکتور:</label>
+                    <select id="invoiceType${itemNumber}" name="invoiceType${itemNumber}" onchange="toggleConditional(${itemNumber})" required>
+                        <option value="">انتخاب کنید.</option>
+                        <option value="تمام پایه">تمام پایه</option>
+                        <option value="زیرگروه زبان">زیرگروه زبان</option>
+                        <option value="فردی">فردی</option>
+                    </select>
+                </div>
+                
+                <div class="conditional" id="conditionalLanguage${itemNumber}" style="display: none;">
+                    <div class="form-group label-input">
+                        <label for="subGroup${itemNumber}">نام زیرگروه زبان:</label>
+                        <select id="subGroup${itemNumber}" name="subGroup${itemNumber}">
+                            <option value="">انتخاب کنید.</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="conditional" id="conditionalNationalID${itemNumber}" style="display: none;">
+                    <div class="form-group label-input">
+                        <label for="nationalID${itemNumber}">کد ملی ده رقمی دانش آموز:</label>
+                        <input type="text" id="nationalID${itemNumber}" name="nationalID${itemNumber}" maxlength="10" pattern="\\d{10}" title="کد ملی باید ده رقم باشد">
+                    </div>
+                </div>
+                
+                <div class="form-group label-input">
+                    <label for="itemCategory${itemNumber}">دسته‌بندی قلم کالا:</label>
+                    <select id="itemCategory${itemNumber}" name="itemCategory${itemNumber}" onchange="toggleItemDetails(${itemNumber})" required>
+                        <option value="">انتخاب کنید.</option>
+                        <option value="ملزومات آموزشی">ملزومات آموزشی</option>
+                        <option value="آزمون/کلوپ/مسابقات">آزمون/کلوپ/مسابقات</option>
+                        <option value="خدمات">خدمات</option>
+                        <option value="انجمن">انجمن</option>
+                        <option value="آژانس/اردو">آژانس/اردو</option>
+                    </select>
+                </div>
+                
+                <div class="conditionalItemDetails" id="conditionalItemDetails${itemCount}" style="display: none;">
+                    <div class="form-group label-input">
+                        <label for="subCode${itemNumber}">دسته‌بندی فرعی کالا:</label>
+                        <select id="subCode${itemNumber}" name="subCode${itemNumber}" required>
+                            <option value="">انتخاب کنید.</option>
+                                                        <option value="لوازم التحریر">لوازم التحریر</option>
+                                                        <option value="کتاب">کتاب</option>
+                                                        <option value="چاپ و تکثیر">چاپ و تکثیر</option>
+                                                        <option value="آزمون">آزمون</option>
+                                                        <option value="کلوپ علمی متوسطه یک">کلوپ علمی متوسطه یک</option>
+                                                        <option value="کلوپ هنری متوسطه یک">کلوپ هنری متوسطه یک</option>
+                                                        <option value="مسابقات">مسابقات</option>
+                                                        <option value="خدمات کارگاه هنر">خدمات کارگاه هنر</option>
+                                                        <option value="خدمات آزمايشگاه ">خدمات آزمايشگاه </option>
+                                                        <option value="خدمات سرو">خدمات سرو</option>
+                                                        <option value="خدمات جشن">خدمات جشن</option>
+                                                        <option value="خدمات خیاطی">خدمات خیاطی</option>
+                                                        <option value="خدمات عکاسی">خدمات عکاسی</option>
+                                                        <option value="بیمه دانش آموزی">بیمه دانش آموزی</option>
+                                                        <option value="ابزار الکتریکی">ابزار الکتریکی</option>
+                                                        <option value="باغبانی و کشاورزی">باغبانی و کشاورزی</option>
+                                                        <option value="عروسک">عروسک</option>
+                                                        <option value="فیزیک">فیزیک</option>
+                                                        <option value="زیست">زیست</option>
+                                                        <option value="شیمی">شیمی</option>
+                                                        <option value="عکاسی">عکاسی</option>
+                                                        <option value="کامپیوتر">کامپیوتر</option>
+                                                        <option value="نمایش">نمایش</option>
+                                                        <option value="روانشناسی">روانشناسی</option>
+                                                        <option value="اردو درون شهری تفریحی">اردو درون شهری تفریحی</option>
+                                                        <option value="اردو درون شهری علمی آموزشی">اردو درون شهری علمی آموزشی</option>
+                                                        <option value="اردو برون شهری">اردو برون شهری</option>
+                                                        <option value="آژانس">آژانس</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group label-input">
+                        <label for="detailCode${itemNumber}">دسته‌بندی تفصیلی کالا:</label>
+                        <select id="detailCode${itemNumber}" name="detailCode${itemNumber}" onchange="handleOtherDetail(${itemNumber})" required>
+                            <option value="">انتخاب کنید.</option>
+                                                        <option value="کتاب تخصصی">کتاب تخصصی</option>
+                                                        <option value="کتاب درسی">کتاب درسی</option>
+                                                        <option value="کتاب زبان خارجه انگلیسی">کتاب زبان خارجه انگلیسی</option>
+                                                        <option value="کتاب زبان خارجه فرانسه">کتاب زبان خارجه فرانسه</option>
+                                                        <option value="کتاب زبان خارجه آلمانی">کتاب زبان خارجه آلمانی</option>
+                                                        <option value="کمک درسی خیلی سبز عربی">کمک درسی خیلی سبز عربی</option>
+                                                        <option value="کمک درسی">کمک درسی</option>
+                                                        <option value="داستان">داستان</option>
+                                                        <option value="فلش کارت">فلش کارت</option>
+                                                        <option value="مجله">مجله</option>
+                                                        <option value="کاغذ">کاغذ</option>
+                                                        <option value="لوازم کاردستی/هنری">لوازم کاردستی/هنری</option>
+                                                        <option value="دفتر">دفتر</option>
+                                                        <option value="پوشه کاغذی خرد/کلربوک">پوشه کاغذی خرد/کلربوک</option>
+                                                        <option value="نوشت افزار">نوشت افزار</option>
+                                                        <option value="بگ/ساک">بگ/ساک</option>
+                                                        <option value="کوله پشتی">کوله پشتی</option>
+                                                        <option value="چاپ و تکثیر">چاپ و تکثیر</option>
+                                                        <option value="صحافی">صحافی</option>
+                                                        <option value="آزمون خیلی سبز">آزمون خیلی سبز</option>
+                                                        <option value="آزمون سنجش">آزمون سنجش</option>
+                                                        <option value="آزمون گزینه دو">آزمون گزینه دو</option>
+                                                        <option value="آزمون منتا">آزمون منتا</option>
+                                                        <option value="آزمون میدیا">آزمون میدیا</option>
+                                                        <option value="ادبیات">ادبیات</option>
+                                                        <option value="ریاضی">ریاضی</option>
+                                                        <option value="زیست">زیست</option>
+                                                        <option value="شیمی">شیمی</option>
+                                                        <option value="فیزیک">فیزیک</option>
+                                                        <option value="انیمیشن">انیمیشن</option>
+                                                        <option value="تصویرسازی">تصویرسازی</option>
+                                                        <option value="سرامیک">سرامیک</option>
+                                                        <option value="طراحی لباس">طراحی لباس</option>
+                                                        <option value="طراحی نقاشی">طراحی نقاشی</option>
+                                                        <option value="عکاسی">عکاسی</option>
+                                                        <option value="گرافیک">گرافیک</option>
+                                                        <option value="گرافیک دیجیتال">گرافیک دیجیتال</option>
+                                                        <option value="نمایش">نمایش</option>
+                                                        <option value="مسابقات کتابخوانی">مسابقات کتابخوانی</option>
+                                                        <option value="صبحانه/ناهار">صبحانه/ناهار</option>
+                                                        <option value="ساندویج">ساندویج</option>
+                                                        <option value="شیرینی،کیک، شکلات">شیرینی،کیک، شکلات</option>
+                                                        <option value="نوشیدنی">نوشیدنی</option>
+                                                        <option value="فارغ التحصیلی">فارغ التحصیلی</option>
+                                                        <option value="جشن مناسبتی">جشن مناسبتی</option>
+                                                        <option value="عکس پرسنلی">عکس پرسنلی</option>
+                                                        <option value="عکس گروهی">عکس گروهی</option>
+                                                        <option value="گل">گل</option>
+                                                        <option value="گلدان">گلدان</option>
+                                                        <option value="بذر">بذر</option>
+                                                        <option value="خاک و پوکه">خاک و پوکه</option>
+                                                        <option value="اردوگاه چمران">اردوگاه چمران</option>
+                                                        <option value="تئاتر/سینما">تئاتر/سینما</option>
+                                                        <option value="موزه">موزه</option>
+                                                        <option value="دیجی کالا">دیجی کالا</option>
+                                                        <option value="باغ نگارستان">باغ نگارستان</option>
+                                                        <option value="سایر">سایر</option>
+                        </select>
+        
+         <input type="text" class="form-control mt-2" id="otherDetailCode${itemNumber}" name="otherDetailCode${itemNumber}" placeholder="لطفاً مشخصات دیگر را وارد کنید" style="display: none;">
+                </div>
+               </div>
+                
+                <div class="form-group label-input">
+                    <label for="unitPrice${itemNumber}">بهای واحد (ریال):</label>
+                    <input type="number" id="unitPrice${itemNumber}" name="unitPrice${itemNumber}" required>
+                </div>
+                <button type="button" class="remove-btn" onclick="removeItem(${itemNumber})">حذف قلم کالا</button>
+            `;
+            document.getElementById('itemsContainer').appendChild(itemDiv);
+        }
+
+        function removeItem(itemNumber) {
+            const itemDiv = document.getElementById(`item-${itemNumber}`);
+            if (itemDiv) {
+                itemDiv.remove();
+                updateItemNumbers();
+            }
+        }
+
+        function updateItemNumbers() {
+            const items = document.querySelectorAll('.item');
+            itemCount = items.length;
+
+            items.forEach((item, index) => {
+                const itemNumber = index + 1;
+                item.id = `item-${itemNumber}`;
+                item.querySelector('h5').innerText = `قلم ${itemNumber}`;
+                item.querySelector('input[type="number"]').id = `itemCount${itemNumber}`;
+                item.querySelector('input[type="number"]').name = `itemCount${itemNumber}`;
+                item.querySelector('select').id = `level${itemNumber}`;
+                item.querySelector('select').name = `level${itemNumber}`;
+                item.querySelector('.remove-btn').setAttribute('onclick', `removeItem(${itemNumber})`);
+            });
+        }
+
+          function toggleConditional(itemNumber) {
+              const invoiceType = document.getElementById(`invoiceType${itemNumber}`).value;
+              const languageDiv = document.getElementById(`conditionalLanguage${itemNumber}`);
+              const nationalIDDiv = document.getElementById(`conditionalNationalID${itemNumber}`);
+
+              // Reset visibility and values
+              languageDiv.style.display = 'none';
+              nationalIDDiv.style.display = 'none';
+              document.getElementById(`nationalID${itemNumber}`).value = ""; // Reset National ID when the type changes
+              document.getElementById(`subGroup${itemNumber}`).value = "";
+
+              if (invoiceType === 'زیرگروه زبان') {
+                  languageDiv.style.display = 'block';
+              } else if (invoiceType === 'فردی') {
+                  nationalIDDiv.style.display = 'block';
+              } else if(invoiceType === 'تمام پایه') {
+                  languageDiv.style.display = 'none';
+                  nationalIDDiv.style.display = 'none';
+
+              }
+          }
+      
+         function toggleItemDetails(itemNumber) { 
+                        const category = document.getElementById(`itemCategory${itemNumber}`).value;
+                        const conditionalItemDetails = document.getElementById(`conditionalItemDetails${itemNumber}`);
+                        const subCodeSelect = document.getElementById(`subCode${itemNumber}`);
+                        const detailCodeSelect = document.getElementById(`detailCode${itemNumber}`);
+                        const otherDetailInput = document.getElementById(`otherDetailCode${itemNumber}`);
+
+                        if (category === 'ملزومات آموزشی') {
+                                subCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="کتاب">کتاب</option>
+                                        <option value="لوازم‌ التحریر">لوازم‌ التحریر</option>
+                                        <option value="ابزار یادگیری">ابزار یادگیری</option>
+                                        <option value="چاپ و تکثیر">چاپ و تکثیر</option>
+                                        
+                                `;
+                                detailCodeSelect.innerHTML = `
+                                <option value="">انتخاب کنید</option>
+                              `;
+                             conditionalItemDetails.style.display = 'block';
+                
+                        // افزودن event listener برای تغییر subCodeSelect
+                            subCodeSelect.addEventListener('change', function() {
+                                const selectedSubCode = subCodeSelect.value;
+                                if (selectedSubCode === 'کتاب') {
+                                	      detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید.</option>
+                                                <option value="کتاب تخصصی">کتاب تخصصی</option>
+                                                <option value="کتاب درسی">کتاب درسی</option>
+                                                <option value="کتاب زبان خارجه انگلیسی">کتاب زبان خارجه انگلیسی</option>
+                                                <option value="کتاب زبان خارجه فرانسه">کتاب زبان خارجه فرانسه</option>
+                                                <option value="کتاب زبان خارجه آلمانی">کتاب زبان خارجه آلمانی</option>
+                                                <option value="کمک درسی">کمک درسی</option>
+                                                <option value="کمک درسی خیلی سبز عربی">کمک درسی خیلی سبز عربی</option>
+                                                <option value="داستان">داستان</option>
+                                                <option value="فلش کارت">فلش کارت</option>
+                                                <option value="مجله">مجله</option>
+                                                <option value="سایر">سایر</option>
+                                      `;
+                              } else if (selectedSubCode === 'لوازم‌ التحریر') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید.</option>
+                                                <option value="کاغذ">کاغذ</option>
+                                                <option value="لوازم کاردستی/هنری">لوازم کاردستی/هنری</option>
+                                                <option value="دفتر">دفتر</option>
+                                                <option value="پوشه کاغذی خرد/کلربوک">پوشه کاغذی خرد/کلربوک</option>
+                                                <option value="نوشت افزار">نوشت افزار</option>
+                                                <option value="بگ/ساک">بگ/ساک</option>
+                                                <option value="کوله پشتی">کوله پشتی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                               } else if (selectedSubCode === 'ابزار یادگیری') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید.</option>
+                                                <option value="ابزار الکتریکی">ابزار الکتریکی</option>
+                                                <option value="باغبانی و کشاورزی (بذر)">باغبانی و کشاورزی (بذر)</option>
+                                                <option value="باغبانی و کشاورزی (خاک و پوکه)">باغبانی و کشاورزی (خاک و پوکه)</option>
+                                                <option value="باغبانی و کشاورزی (گل)">باغبانی و کشاورزی (گل)</option>
+                                                <option value="باغبانی و کشاورزی (گلدان)">باغبانی و کشاورزی (گلدان)</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                              } else if (selectedSubCode === 'چاپ و تکثیر') {
+                                        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید.</option>
+                                                <option value="چاپ و تکثیر">چاپ و تکثیر</option>
+                                                <option value="صحافی">صحافی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                              }
+                        });
+                        
+                        } else if (category === 'آزمون/کلوپ/مسابقات') {
+                                subCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید.</option>
+                                        <option value="آزمون">آزمون</option>
+                                        <option value="کلوپ علمی متوسطه یک">کلوپ علمی متوسطه یک</option>
+                                        <option value="کلوپ هنری متوسطه یک">کلوپ هنری متوسطه یک</option>
+                                        <option value="مسابقات">مسابقات</option>
+                                `;
+                                  detailCodeSelect.innerHTML = `
+                                <option value="">انتخاب کنید</option>
+                              `;
+                             conditionalItemDetails.style.display = 'block';
+                
+                        // افزودن event listener برای تغییر subCodeSelect
+                            subCodeSelect.addEventListener('change', function() {
+                                const selectedSubCode = subCodeSelect.value;     
+                                if (selectedSubCode === 'آزمون') {
+	                                detailCodeSelect.innerHTML = `
+	                                        <option value="">انتخاب کنید</option>
+	                                        <option value="آزمون خیلی سبز">آزمون خیلی سبز</option>
+	                                        <option value="آزمون سنجش">آزمون سنجش</option>
+	                                        <option value="آزمون گزینه دو">آزمون گزینه دو</option>
+	                                        <option value="آزمون منتا">آزمون منتا</option>
+	                                        <option value="آزمون میدیا">آزمون میدیا</option>
+	                                        <option value="سایر">سایر</option>
+                                 `;  
+                                 } else if (selectedSubCode === 'کلوپ علمی متوسطه یک') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="ادبیات">ادبیات</option>
+	                                    <option value="ریاضی">ریاضی</option>
+	                                     <option value="زیست">زیست</option>
+	                                    <option value="شیمی">شیمی</option>
+	                                    <option value="فیزیک">فیزیک</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                      } else if (selectedSubCode === 'کلوپ هنری متوسطه یک') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="انیمیشن">انیمیشن</option>
+                                <option value="تصویرسازی">تصویرسازی</option>
+                                <option value="سرامیک">سرامیک</option>
+                                <option value="طراحی لباس">طراحی لباس</option>
+                                <option value="طراحی نقاشی">طراحی نقاشی</option>
+                                <option value="عکاسی">عکاسی</option>
+                                <option value="گرافیک">گرافیک</option>
+                                <option value="گرافیک دیجیتال">گرافیک دیجیتال</option>
+                                <option value="نمایش">نمایش</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                               
+                                      } else if (selectedSubCode === 'مسابقات') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="مسابقات کتابخوانی">مسابقات کتابخوانی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                              }
+                        });
+                                
+                        } else if (category === 'خدمات') {
+                                subCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="خدمات کارگاه هنر">خدمات کارگاه هنر</option>
+                                        <option value="خدمات آزمايشگاه">خدمات آزمايشگاه</option>
+                                        <option value="خدمات سرو">خدمات سرو</option>
+                                        <option value="خدمات جشن">خدمات جشن</option>
+                                        <option value="خدمات خیاطی">خدمات خیاطی</option>
+                                        <option value="خدمات عکاسی">خدمات عکاسی</option>
+                                        <option value="بیمه دانش آموزی">بیمه دانش آموزی</option>
+                                `;
+                                
+                                detailCodeSelect.innerHTML = `
+                                <option value="">انتخاب کنید</option>
+                              `;
+                              conditionalItemDetails.style.display = 'block';
+                
+                        // افزودن event listener برای تغییر subCodeSelect
+                            subCodeSelect.addEventListener('change', function() {
+                                const selectedSubCode = subCodeSelect.value;
+                                if (selectedSubCode === 'خدمات کارگاه هنر') {
+	                                detailCodeSelect.innerHTML = `
+	                                <option value="">انتخاب کنید</option>
+	                                <option value="none">توضیحات بیشتری ندارد.</option>
+	                                <option value="سایر">سایر</option>
+                                `;
+                                } else if (selectedSubCode === 'خدمات آزمايشگاه') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="زیست">زیست</option>
+	                                    <option value="شیمی">شیمی</option>
+	                                    <option value="فیزیک">فیزیک</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                 } else if (selectedSubCode === 'خدمات سرو') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="صبحانه/ناهار">صبحانه/ناهار</option>
+                                             <option value="ساندویج">ساندویج</option>
+                                             <option value="شیرینی،کیک، شکلات">شیرینی،کیک، شکلات</option>
+                                             <option value="نوشیدنی">نوشیدنی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                  } else if (selectedSubCode === 'خدمات جشن') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="فارغ التحصیلی">فارغ التحصیلی</option>
+                                             <option value="جشن مناسبتی">جشن مناسبتی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                    } else if (selectedSubCode === 'خدمات خیاطی') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="none">توضیحات بیشتری ندارد.</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                    } else if (selectedSubCode === 'خدمات عکاسی') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="عکس پرسنلی">عکس پرسنلی</option>
+                                             <option value="عکس گروهی">عکس گروهی</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                                    } else if (selectedSubCode === 'بیمه دانش آموزی') {
+                              	        detailCodeSelect.innerHTML = `
+                                                <option value="">انتخاب کنید</option>
+                                                <option value="none">توضیحات بیشتری ندارد.</option>
+                                                <option value="سایر">سایر</option>
+                                                `;
+                              }
+                        });
+                                
+                        } else if (category === 'انجمن') {
+                                subCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="فیزیک">فیزیک</option>
+                                        <option value="زیست">زیست</option>
+                                        <option value="شیمی">شیمی</option>
+                                        <option value="عکاسی">عکاسی</option>
+                                        <option value="کامپیوتر">کامپیوتر</option>
+                                        <option value="نمایش">نمایش</option>
+                                        <option value="روانشناسی">روانشناسی</option>
+                                `;
+                                
+                                detailCodeSelect.innerHTML = `
+                                <option value="">انتخاب کنید</option>
+                                <option value="none">توضیحات بیشتری ندارد.</option>
+                                 <option value="سایر">سایر</option>
+                              `;
+                              conditionalItemDetails.style.display = 'block';
+                
+                        } else if (category === 'آژانس/اردو') {
+                                subCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="اردو درون شهری تفریحی">اردو درون شهری تفریحی</option>
+                                        <option value="اردو درون شهری علمی آموزشی">اردو درون شهری علمی آموزشی</option>
+                                        <option value="اردو برون شهری">اردو برون شهری</option>
+                                        <option value="آژانس">آژانس</option>
+                                `;
+                                
+                                detailCodeSelect.innerHTML = `
+                                <option value="">انتخاب کنید</option>
+                              `;
+                              conditionalItemDetails.style.display = 'block';
+                
+                        // افزودن event listener برای تغییر subCodeSelect
+                            subCodeSelect.addEventListener('change', function() {
+                                const selectedSubCode = subCodeSelect.value;
+                                if (selectedSubCode === 'آژانس') {
+                                	detailCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="none">توضیحات بیشتری ندارد.</option>
+                                        <option value="سایر">سایر</option>
+                                `;
+                                } else if (selectedSubCode === 'اردو درون شهری تفریحی') {
+                                detailCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="اردوگاه چمران">اردوگاه چمران</option>
+                                        <option value="تئاتر/سینما">تئاتر/سینما</option>
+                                        <option value="موزه">موزه</option>
+                                        <option value="دیجی کالا">دیجی کالا</option>
+                                        <option value="باغ نگارستان">باغ نگارستان</option>
+                                        <option value="سایر">سایر</option>
+                                `;
+                     		   } else if (selectedSubCode === 'اردو درون شهری علمی آموزشی') {
+                                detailCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="اردوگاه چمران">اردوگاه چمران</option>
+                                        <option value="تئاتر/سینما">تئاتر/سینما</option>
+                                        <option value="موزه">موزه</option>
+                                        <option value="دیجی کالا">دیجی کالا</option>
+                                        <option value="باغ نگارستان">باغ نگارستان</option>
+                                        <option value="سایر">سایر</option>
+                                `;} else if (selectedSubCode === 'اردو برون شهری') {
+                                detailCodeSelect.innerHTML = `
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="اردوگاه چمران">اردوگاه چمران</option>
+                                        <option value="تئاتر/سینما">تئاتر/سینما</option>
+                                        <option value="موزه">موزه</option>
+                                        <option value="دیجی کالا">دیجی کالا</option>
+                                        <option value="باغ نگارستان">باغ نگارستان</option>
+                                        <option value="سایر">سایر</option>
+                                `; }
+                        });
+		}
+                        otherDetailInput.style.display = "none"; // مخفی کردن ورودی سایر
+                }
+      
+        function handleOtherDetail(itemNumber) {
+            const detailCode = document.getElementById(`detailCode${itemNumber}`).value;
+            const otherDetailInput = document.getElementById(`otherDetailCode${itemNumber}`);
+            
+            otherDetailInput.style.display = "none";
+            
+            if (detailCode === "سایر") {
+                otherDetailInput.style.display = "block";
+            }
+        }
+        
+
+        function showTemporaryMessage(message) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerText = message;
+            messageDiv.style.display = 'block'; // نمایش پیام
+            messageDiv.style.animation = 'fadeIn 0.3s ease'; // افزودن انیمیشن
+
+            // بعد از 5 ثانیه، پیام پنهان می‌شود
+            setTimeout(() => {
+                messageDiv.style.display = 'none'; // پنهان کردن پیام
+            }, 5000);
+        }
+      
+      
+        function resetForm() {
+            document.getElementById('invoiceForm').reset();
+            document.getElementById('itemsContainer').innerHTML = '';
+            itemCount = 0;
+        }
+       
+        document.getElementById('invoiceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // ثبت تاریخ و ساعت کنونی
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString('fa-IR')} ${currentDate.toLocaleTimeString('fa-IR')}`;
+        document.getElementById('submitTimestamp').value = formattedDate; // ثبت در فیلد پنهان
+
+        const submitButton = document.querySelector('button[type="submit"]');
+
+        // تغییر رنگ دکمه ارسال به خاکستری و غیر فعال کردن آن
+        submitButton.style.backgroundColor = 'gray';
+        submitButton.disabled = true;
+
+          // نمایش پیام انتظار
+    showTemporaryMessage('لطفا برای ثبت اطلاعات فاکتور منتظر بمانید!');
+
+          
+          
+        const formData = new FormData(this);
+        const invoiceNumber = document.getElementById('invoiceNumber').value;
+        const nationalIDs = [...document.querySelectorAll('input[id^="nationalID"]')].map(input => input.value);
+        const invoiceType = document.querySelector('select[name^="invoiceType"]').value;
+
+        const isInvoiceNumberValid = /^[a-zA-Z0-9]+$/.test(invoiceNumber);
+        if (!isInvoiceNumberValid) {
+            alert('شماره فاکتور باید فقط به انگلیسی باشد.');
+            submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
+            submitButton.disabled = false; // فعال کردن دکمه
+            return;
+        }
+
+        if (invoiceType === 'فردی') {
+            const isNationalIDValid = nationalIDs.every(id => /^\d{10}$/.test(id));
+            if (!isNationalIDValid) {
+                alert('کد ملی هر دانش آموز باید یک عدد ۱۰ رقمی باشد.');
+                submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
+                submitButton.disabled = false; // فعال کردن دکمه
+                return;
+            }
+        }
+        fetch('https://script.google.com/macros/s/AKfycbxILC2BbITum5focOtecCGmuQbu6aGLZWUxjeFPTraZR7ktC_jKykQ03UT2QajUF3xhkw/exec', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('اطلاعات فاکتور با موفقیت ثبت شد!');
+                resetForm(); // ریست کردن فرم
+            } else {
+                alert('خطا در ارسال اطلاعات، لطفا دوباره تلاش کنید.');
+            }
+        })
+        .catch(error => {
+            alert('خطا در ارسال اطلاعات: ' + error.message);
+        })
+        .finally(() => {
+            // برگرداندن رنگ دکمه به حالت پیش‌فرض و فعال کردن آن
+            submitButton.style.backgroundColor = ''; // برگرداندن رنگ به حالت پیش‌فرض
+            submitButton.disabled = false; // فعال کردن دکمه
+        });
+    });
+
+    </script>
+</body>
+</html>
