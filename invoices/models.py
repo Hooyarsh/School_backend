@@ -1,12 +1,13 @@
 # invoices/models.py
 from django.db import models
+from django_jalali.db import models as jmodels
 
 class Student(models.Model):
     national_id = models.CharField(max_length=10, unique=True)
     grade = models.CharField(max_length=10)
     subgroup = models.CharField(max_length=50)
-    register_date = models.DateField()
-    deregister_date = models.DateField()
+    register_date = jmodels.jDateTimeField()
+    deregister_date = jmodels.jDateTimeField()
     tan_khah_total = models.FloatField(default=0)
 
 class TanKhahEntry(models.Model):
@@ -20,8 +21,9 @@ class StdEntry(models.Model):
     invoice_tag = models.CharField(max_length=50)
 
 class Invoice(models.Model):
+    objects = jmodels.jManager()
     invoice_number = models.CharField(max_length=20)
-    invoice_date = models.DateField()
+    invoice_date = models.DateTimeField(null = True)
     total_amount = models.BigIntegerField()
     supplier_details = models.TextField()
     description = models.TextField(blank=True, null=True)
@@ -61,7 +63,7 @@ def submit_invoice(request):
 
     invoice = Invoice.objects.create(
         invoice_number=data.get('invoiceNumber'),
-        invoice_date=parse_date(data.get('invoiceDate')),
+        #invoice_date=parse_date(data.get('invoiceDate')),
         total_amount=data.get('totalAmount'),
         supplier_details=data.get('finalSupplierDetails'),
         description=data.get('finalDescription')
@@ -83,10 +85,10 @@ def submit_invoice(request):
         elif invoice_type == 'زیرگروه زبان':
             students = students.filter(subgroup=subgroup)
 
-        students = students.filter(
-            register_date__lte=invoice.invoice_date,
-            deregister_date__gte=invoice.invoice_date
-        )
+        #students = students.filter(
+        #    register_date__lte=invoice.invoice_date,
+        #    deregister_date__gte=invoice.invoice_date
+        #)
 
         matched_count = students.count()
         price_per_person = (count * unit_price / matched_count) if matched_count > 0 else 0
