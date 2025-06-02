@@ -205,11 +205,11 @@
             </div>
  
 
-            <!-- <div class="form-group label-input">
+            <div class="form-group label-input">
     <label for="invoiceDate">تاریخ فاکتور:</label>
     <input type="text" id="invoiceDate" data-jdp placeholder=" تاریخ شمسی فاکتور را وارد کنید." data-jdp-only-date readonly name="invoiceDate"> 
 </div>
--->
+
         
        
             <div class="form-group label-input">
@@ -800,95 +800,109 @@ function resetForm() {
     itemCount = 0;
 }
 
-// document.getElementById('invoiceForm').addEventListener('submit', function(event) {
-//     event.preventDefault();
+document.getElementById('invoiceForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-//     // ثبت تاریخ و ساعت کنونی
-//     const currentDate = new Date();
-//     const formattedDate = `${currentDate.toLocaleDateString('fa-IR')} ${currentDate.toLocaleTimeString('fa-IR')}`;
-//     document.getElementById('submitTimestamp').value = formattedDate; // ثبت در فیلد پنهان
+    // ثبت تاریخ و ساعت کنونی
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.toLocaleDateString('fa-IR')} ${currentDate.toLocaleTimeString('fa-IR')}`;
+    document.getElementById('submitTimestamp').value = formattedDate; // ثبت در فیلد پنهان
 
-//     const submitButton = document.querySelector('button[type="submit"]');
+    const submitButton = document.querySelector('button[type="submit"]');
 
-//     // تغییر رنگ دکمه ارسال به خاکستری و غیر فعال کردن آن
-//     submitButton.style.backgroundColor = 'gray';
-//     submitButton.disabled = true;
+    // تغییر رنگ دکمه ارسال به خاکستری و غیر فعال کردن آن
+    submitButton.style.backgroundColor = 'gray';
+    submitButton.disabled = true;
 
-//     // نمایش پیام انتظار
-//     showTemporaryMessage('لطفا برای ثبت اطلاعات فاکتور منتظر بمانید!');
+    // نمایش پیام انتظار
+    showTemporaryMessage('لطفا برای ثبت اطلاعات فاکتور منتظر بمانید!');
 
-//     const formData = new FormData(this);
-//     const invoiceNumber = document.getElementById('invoiceNumber').value;
-//     const nationalIDs = [...document.querySelectorAll('input[id^="nationalID"]')].map(input => input.value);
-//     const invoiceType = document.querySelector('select[name^="invoiceType"]').value;
+    const formData = new FormData(this);
+    const invoiceNumber = document.getElementById('invoiceNumber').value;
+    const nationalIDs = [...document.querySelectorAll('input[id^="nationalID"]')].map(input => input.value);
+    const invoiceType = document.querySelector('select[name^="invoiceType"]').value;
 
-//     const isInvoiceNumberValid = /^[a-zA-Z0-9]+$/.test(invoiceNumber);
-//     if (!isInvoiceNumberValid) {
-//         alert('شماره فاکتور باید فقط به انگلیسی باشد.');
-//         submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
-//         submitButton.disabled = false; // فعال کردن دکمه
-//         return;
-//     }
+    const isInvoiceNumberValid = /^[a-zA-Z0-9]+$/.test(invoiceNumber);
+    if (!isInvoiceNumberValid) {
+        alert('شماره فاکتور باید فقط به انگلیسی باشد.');
+        submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
+        submitButton.disabled = false; // فعال کردن دکمه
+        return;
+    }
 
-//     if (invoiceType === 'فردی') {
-//         const isNationalIDValid = nationalIDs.every(id => /^\d{10}$/.test(id));
-//         if (!isNationalIDValid) {
-//             alert('کد ملی هر دانش آموز باید یک عدد ۱۰ رقمی باشد.');
-//             submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
-//             submitButton.disabled = false; // فعال کردن دکمه
-//             return;
-//         }
-//     }
+    if (invoiceType === 'فردی') {
+        const isNationalIDValid = nationalIDs.every(id => /^\d{10}$/.test(id));
+        if (!isNationalIDValid) {
+            alert('کد ملی هر دانش آموز باید یک عدد ۱۰ رقمی باشد.');
+            submitButton.style.backgroundColor = ''; // بازگشت رنگ دکمه به حالت اولیه
+            submitButton.disabled = false; // فعال کردن دکمه
+            return;
+        }
+    }
 
-//     const formJSON = Object.fromEntries(formData.entries());
+    // document.getElementById('invoiceForm').addEventListener('submit', function(event) {
+    // event.preventDefault();
+    // // ...existing code...
 
-//     fetch('/api/submit-invoice/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'X-CSRFToken': getCookie('csrftoken'),
-//         },
-//         body: JSON.stringify(formJSON),
-//     })
-//     .then(response => {
-//         if (response.ok) {
-//             alert('اطلاعات فاکتور با موفقیت ثبت شد!');
-//             resetForm();
-//         } else {
-//             alert('خطا در ارسال اطلاعات، لطفا دوباره تلاش کنید.');
-//         }
-//     })
-//     .catch(error => {
-//         alert('خطا در ارسال اطلاعات: ' + error.message);
-//     })
-//     .finally(() => {
-//         submitButton.style.backgroundColor = '';
-//         submitButton.disabled = false;
-//     });
-// });
+    const formData = new FormData(this);
 
+    // Build items array
+    const items = [];
+    for (let i = 1; i <= itemCount; i++) {
+        // Only add if the item still exists in DOM (not removed)
+        if (document.getElementById(`itemCount${i}`)) {
+            items.push({
+                count: formData.get(`itemCount${i}`),
+                level: formData.get(`level${i}`),
+                invoiceType: formData.get(`invoiceType${i}`),
+                subgroupLanguage: formData.get(`subGroup${i}`),
+                nationalID: formData.get(`nationalID${i}`),
+                category: formData.get(`itemCategory${i}`),
+                subCode: formData.get(`subCode${i}`),
+                detailCode: formData.get(`detailCode${i}`),
+                otherDetailCode: formData.get(`otherDetailCode${i}`),
+                unitPrice: formData.get(`unitPrice${i}`)
+            });
+        }
+    }
 
-//     </script>
+    // Build main form JSON
+    const formJSON = {
+        invoiceNumber: formData.get('invoiceNumber'),
+        invoiceDate: formData.get('invoiceDate'),
+        totalAmount: formData.get('totalAmount'),
+        finalSupplierDetails: formData.get('finalSupplierDetails'),
+        finalDescription: formData.get('finalDescription'),
+        items: items,
+        submitTimestamp: formData.get('submitTimestamp')
+    };
 
-// <script>
-// document.addEventListener("DOMContentLoaded", () => {
-//   const form = document.getElementById("invoiceForm");
-//   if (!form) {
-//     console.error("Form not found");
-//     return;
-//   }
+    fetch('/api/submit-invoice/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(formJSON),
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('اطلاعات فاکتور با موفقیت ثبت شد!');
+            resetForm();
+        } else {
+            alert('خطا در ارسال اطلاعات، لطفا دوباره تلاش کنید.');
+        }
+    })
+    .catch(error => {
+        alert('خطا در ارسال اطلاعات: ' + error.message);
+    })
+    .finally(() => {
+        submitButton.style.backgroundColor = '';
+        submitButton.disabled = false;
+    });
+});
 
-//   console.log("✅ JS attached to form");
-
-//   form.addEventListener("submit", (e) => {
-//     e.preventDefault();
-//     console.log("🧾 Submitting form...");
-
-//     // Instead of fetch, just test this
-//     alert("Form submitted by JS!");
-//   });
-// });
-// </script>
+</script>
 
 </body>
 </html>

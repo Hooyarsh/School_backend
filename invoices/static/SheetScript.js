@@ -10,11 +10,14 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     console.log("🧾 Submitting form...");
     
+    const jalaliDate = document.getElementById("invoiceDate").value;
+    const formattedJalaliDate = jalaliDate.replace(/\//g, '-');
+
     // Gather and send data using fetch:
     const formData = new FormData(form);
     const data = {
       invoice_number: document.getElementById("invoiceNumber").value,
-      // invoice_date: document.getElementById("invoiceDate").value,
+      invoice_date: formattedJalaliDate,//document.getElementById("invoiceDate").value,
       total_amount: document.getElementById("totalAmount").value,
       supplier_details: document.getElementById("finalSupplierDetails").value,
       description: document.getElementById("finalDescription").value,
