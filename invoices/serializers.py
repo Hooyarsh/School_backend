@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Invoice, InvoiceItem
+from .fields import JalaliDateField
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,6 +8,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class InvoiceSerializer(serializers.ModelSerializer):
+    invoice_date = JalaliDateField()
     items = InvoiceItemSerializer(many=True)
 
     class Meta:

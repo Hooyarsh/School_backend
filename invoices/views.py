@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import InvoiceSerializer
+from rest_framework.views import APIView
 
 
 @api_view(['POST'])
@@ -27,3 +28,11 @@ def high_form(request):
 
 def api_home(request):
     return render(request, 'invoices/api_home.html')
+
+class InvoiceSubmitView(APIView):
+    def post(self, request):
+        serializer = InvoiceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

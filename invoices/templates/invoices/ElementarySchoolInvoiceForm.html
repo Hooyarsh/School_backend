@@ -207,8 +207,8 @@
 
             <div class="form-group label-input">
     <label for="invoiceDate">تاریخ فاکتور:</label>
-    <input type="text" id="invoiceDate" data-jdp placeholder=" تاریخ شمسی فاکتور را وارد کنید." data-jdp-only-date readonly name="invoiceDate"> 
-</div>
+    <input type="text" id="invoiceDate" data-jdp placeholder=" تاریخ شمسی فاکتور را وارد کنید." data-jdp-only-date name="invoiceDate">
+    </div>
 
         
        
@@ -844,12 +844,13 @@ document.getElementById('invoiceForm').addEventListener('submit', function(event
     // event.preventDefault();
     // // ...existing code...
 
-    const formData = new FormData(this);
+//     const formData = new FormData(this);
 
-    // Build items array
+// const formData = new FormData(this);
+
+//     // Build items array
     const items = [];
     for (let i = 1; i <= itemCount; i++) {
-        // Only add if the item still exists in DOM (not removed)
         if (document.getElementById(`itemCount${i}`)) {
             items.push({
                 count: formData.get(`itemCount${i}`),
@@ -866,16 +867,29 @@ document.getElementById('invoiceForm').addEventListener('submit', function(event
         }
     }
 
-    // Build main form JSON
+
+    let invoiceDate = formData.get('invoiceDate');
+    if (invoiceDate) {
+        invoiceDate = invoiceDate.replace(/\//g, '-');
+    }
+
+    let submitTimestamp = formData.get('submitTimestamp');
+    if (submitTimestamp) {
+        submitTimestamp = toEnglishDigits(submitTimestamp).replace(/\//g, '-');
+    }
+
     const formJSON = {
         invoiceNumber: formData.get('invoiceNumber'),
-        invoiceDate: formData.get('invoiceDate'),
+        invoiceDate: invoiceDate,
         totalAmount: formData.get('totalAmount'),
         finalSupplierDetails: formData.get('finalSupplierDetails'),
         finalDescription: formData.get('finalDescription'),
         items: items,
-        submitTimestamp: formData.get('submitTimestamp')
+        submitTimestamp: submitTimestamp
     };
+
+    // Debug: check JSON before sending
+    console.log(JSON.stringify(formJSON));
 
     fetch('/api/submit-invoice/', {
         method: 'POST',
@@ -901,6 +915,13 @@ document.getElementById('invoiceForm').addEventListener('submit', function(event
         submitButton.disabled = false;
     });
 });
+
+
+function toEnglishDigits(str) {
+    if (!str) return str;
+    return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+              .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
 
 </script>
 
