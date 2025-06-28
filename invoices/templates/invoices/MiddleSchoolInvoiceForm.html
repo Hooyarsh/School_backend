@@ -450,26 +450,28 @@
         }
 
           function toggleConditional(itemNumber) {
-              const invoice_type = document.getElementById(`invoice_type${itemNumber}`).value;
-              const languageDiv = document.getElementById(`conditionalLanguage${itemNumber}`);
-              const national_idDiv = document.getElementById(`conditionalnational_id${itemNumber}`);
+            const invoice_type = document.getElementById(`invoice_type${itemNumber}`).value;
+            const languageDiv = document.getElementById(`conditionalLanguage${itemNumber}`);
+            const national_idDiv = document.getElementById(`conditionalnational_id${itemNumber}`);
 
-              // Reset visibility and values
-              languageDiv.style.display = 'none';
-              national_idDiv.style.display = 'none';
-              document.getElementById(`national_id${itemNumber}`).value = ""; // Reset National ID when the type changes
-              document.getElementById(`subGroup${itemNumber}`).value = "";
+            // Reset visibility and values
+            languageDiv.style.display = 'none';
+            national_idDiv.style.display = 'none';
+            document.getElementById(`national_id${itemNumber}`).value = ""; // Reset National ID when the type changes
+            document.getElementById(`subgroup_language${itemNumber}`).value = ""; // <-- fix id here
 
-              if (invoice_type === 'زیرگروه زبان') {
-                  languageDiv.style.display = 'block';
-              } else if (invoice_type === 'فردی') {
-                  national_idDiv.style.display = 'block';
-              } else if(invoice_type === 'تمام پایه') {
-                  languageDiv.style.display = 'none';
-                  nnational_idDiv.style.display = 'none';
-
-              }
-          }
+            if (invoice_type === 'زیرگروه زبان') {
+                languageDiv.style.display = 'block';
+            }
+            if (invoice_type === 'فردی') {
+                national_idDiv.style.display = 'block';
+            }
+            // If both are needed (for future logic)
+            if (invoice_type === 'زیرگروه زبان' || invoice_type === 'فردی') {
+                if (invoice_type === 'زیرگروه زبان') languageDiv.style.display = 'block';
+                if (invoice_type === 'فردی') national_idDiv.style.display = 'block';
+            }
+        }
       
          function toggleItemDetails(itemNumber) { 
                         const category = document.getElementById(`itemCategory${itemNumber}`).value;
