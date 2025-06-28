@@ -5,7 +5,7 @@ from django_jalali.db import models as jmodels
 class Student(models.Model):
     national_id = models.CharField(max_length=10, unique=True)
     grade = models.CharField(max_length=10)
-    subgroup = models.CharField(max_length=50)
+    subgroup_language = models.CharField(max_length=50)
     register_date = jmodels.jDateTimeField()
     deregister_date = jmodels.jDateTimeField()
     tan_khah_total = models.FloatField(default=0)
@@ -61,20 +61,20 @@ def submit_invoice(request):
     data = request.data
 
     invoice = Invoice.objects.create(
-        invoice_number=data.get('invoiceNumber'),
-        invoice_date=parse_date(data.get('invoiceDate')),
-        total_amount=data.get('totalAmount'),
-        supplier_details=data.get('finalSupplierDetails'),
-        description=data.get('finalDescription')
+        invoice_number=data.get('invoice_number'),
+        invoice_date=parse_date(data.get('invoice_date')),
+        total_amount=data.get('total_amount'),
+        supplier_details=data.get('supplier_details'),
+        description=data.get('description')
     )
 
     for i, item in enumerate(data.get('items', []), start=1):
         count = int(item.get('count', 0))
-        unit_price = int(item.get('unitPrice', 0))
+        unit_price = int(item.get('unit_price', 0))
         level = item.get('level')
-        invoice_type = item.get('invoiceType')
-        subgroup = item.get('subgroupLanguage', '')
-        national_id = format_id(item.get('nationalID', ''))
+        invoice_type = item.get('invoice_type')
+        subgroup_language = item.get('subgroup_language', '')
+        national_id = format_id(item.get('national_id', ''))
         matched_students = []
 
         students = Student.objects.filter(grade=level)
@@ -82,7 +82,7 @@ def submit_invoice(request):
         if invoice_type == 'فردی':
             students = students.filter(national_id=national_id)
         elif invoice_type == 'زیرگروه زبان':
-            students = students.filter(subgroup=subgroup)
+            students = students.filter(subgroup_language=subgroup_language)
 
         students = students.filter(
             register_date__lte=invoice.invoice_date,
@@ -119,9 +119,9 @@ def submit_invoice(request):
             subgroup_language=subgroup,
             student_national_id=national_id,
             category=item.get('category'),
-            sub_code=item.get('subCode'),
-            detail_code=item.get('detailCode'),
-            other_detail_code=item.get('otherDetailCode'),
+            sub_code=item.get('sub_code'),
+            detail_code=item.get('detail_code'),
+            other_detail_code=item.get('other_detail_code'),
             matched_student_count=matched_count,
             price_per_person=price_per_person
         )

@@ -3,11 +3,14 @@ from .models import Invoice, InvoiceItem
 from .fields import JalaliDateField
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
+    invoice = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = InvoiceItem
         fields = '__all__'
 
 class InvoiceSerializer(serializers.ModelSerializer):
+    invoice = serializers.PrimaryKeyRelatedField(read_only=True)
     invoice_date = JalaliDateField()
     items = InvoiceItemSerializer(many=True)
 

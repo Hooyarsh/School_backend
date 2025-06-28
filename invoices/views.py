@@ -14,6 +14,7 @@ import re
 def submit_invoice(request):
     cleaned_data = clean_json(request.data)
     serializer = InvoiceSerializer(data=cleaned_data)
+    
     if serializer.is_valid():
         serializer.save()
         return Response({'message': 'Invoice saved successfully.'}, status=status.HTTP_201_CREATED)

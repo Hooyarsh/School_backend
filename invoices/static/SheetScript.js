@@ -10,17 +10,17 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     console.log("🧾 Submitting form...");
     
-    const jalaliDate = document.getElementById("invoiceDate").value;
+    const jalaliDate = document.getElementById("invoice_date").value;
     const formattedJalaliDate = jalaliDate.replace(/\//g, '-');
 
     // Gather and send data using fetch:
     const formData = new FormData(form);
     const data = {
-      invoice_number: document.getElementById("invoiceNumber").value,
+      invoice_number: document.getElementById("invoice_number").value,
       invoice_date: formattedJalaliDate,//document.getElementById("invoiceDate").value,
-      total_amount: document.getElementById("totalAmount").value,
-      supplier_details: document.getElementById("finalSupplierDetails").value,
-      description: document.getElementById("finalDescription").value,
+      total_amount: document.getElementById("total_amount").value,
+      supplier_details: document.getElementById("supplier_details").value,
+      description: document.getElementById("description").value,
       items: [],
 };
 
@@ -29,14 +29,14 @@ document.addEventListener("DOMContentLoaded", function () {
       data.items.push({
         count: document.getElementById(`itemCount${i}`).value,
         level: document.getElementById(`level${i}`).value,
-        invoice_type: document.getElementById(`invoiceType${i}`).value,
-        nationalID: document.getElementById(`nationalID${i}`)?.value || "",
-        subgroup_language: document.getElementById(`subgroupLanguage${i}`)?.value || "",
+        invoice_type: document.getElementById(`invoice_type${i}`).value,
+        national_id: document.getElementById(`national_id${i}`)?.value || "",
+        subgroup_language: document.getElementById(`subgroup_language${i}`)?.value || "",
         category: document.getElementById(`category${i}`).value,
-        sub_code: document.getElementById(`subCode${i}`).value,
-        detail_code: document.getElementById(`detailCode${i}`).value,
-        other_detail_code: document.getElementById(`otherDetailCode${i}`)?.value || "",
-        unit_price: document.getElementById(`unitPrice${i}`).value,
+        sub_code: document.getElementById(`sub_code${i}`).value,
+        detail_code: document.getElementById(`detail_code${i}`).value,
+        other_detail_code: document.getElementById(`other_detail_code${i}`)?.value || "",
+        unit_price: document.getElementById(`unit_price${i}`).value,
       });
 
       i++;
