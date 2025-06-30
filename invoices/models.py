@@ -1,6 +1,8 @@
 # invoices/models.py
 from django.db import models
 from django_jalali.db import models as jmodels
+from django.contrib.postgres.fields import ArrayField
+
 
 class Student(models.Model):
     national_id = models.CharField(max_length=10, unique=True)
@@ -31,7 +33,7 @@ class Invoice(models.Model):
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, related_name='items', on_delete=models.CASCADE)
     count = models.IntegerField()
-    level = models.CharField(max_length=20)
+    level = ArrayField(models.CharField(max_length=100), default=list)
     invoice_type = models.CharField(max_length=50)
     subgroup_language = models.CharField(max_length=50, blank=True, null=True)
     student_national_id = models.CharField(max_length=10, blank=True, null=True)
@@ -72,12 +74,14 @@ def submit_invoice(request):
         count = int(item.get('count', 0))
         unit_price = int(item.get('unit_price', 0))
         level = item.get('level')
+        if isinstance(level, str):
+            level = [level]
         invoice_type = item.get('invoice_type')
         subgroup_language = item.get('subgroup_language', '')
         national_id = format_id(item.get('national_id', ''))
         matched_students = []
 
-        students = Student.objects.filter(grade=level)
+        students = Student.objects.filter(grade__in=level)
 
         if invoice_type == 'فردی':
             students = students.filter(national_id=national_id)

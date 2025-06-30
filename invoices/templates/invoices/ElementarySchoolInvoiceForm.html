@@ -264,17 +264,28 @@
                     <input type="number" id="itemCount${itemNumber}" name="itemCount${itemNumber}" required>
                 </div>
                 <div class="form-group label-input">
-                    <label for="level${itemNumber}">پایه:</label>
-                    <select id="level${itemNumber}" name="level${itemNumber}" required>
-                        <option value="">انتخاب کنید.</option>
-                        <option value="اول">اول</option>
-                        <option value="دوم">دوم</option>
-                        <option value="سوم">سوم</option>
-                        <option value="چهارم">چهارم</option>
-                        <option value="پنجم">پنجم</option>
-                        <option value="ششم">ششم</option>
-                    </select>
-                </div>             
+    <label style="margin-bottom:0;" for="level${itemNumber}">پایه:</label>
+    <div id="levelGroup${itemNumber}" style="display:flex; gap:10px; flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="اول">اول
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="دوم">دوم
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="سوم">سوم
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="چهارم">چهارم
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="پنجم">پنجم
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;">
+            <input type="checkbox" name="level${itemNumber}" value="ششم">ششم
+        </label>
+    </div>
+</div>   
                 <div class="form-group label-input">
                     <label for="invoice_type${itemNumber}">نوع فاکتور:</label>
                     <select id="invoice_type${itemNumber}" name="invoice_type${itemNumber}" onchange="toggleConditional(${itemNumber})" required>
@@ -854,9 +865,12 @@ document.getElementById('invoiceForm').addEventListener('submit', function(event
     const items = [];
     for (let i = 1; i <= itemCount; i++) {
         if (document.getElementById(`itemCount${i}`)) {
+            const levelCheckboxes = document.querySelectorAll(`input[name="level${i}"]:checked`);
+            const selectedLevels = Array.from(levelCheckboxes).map(cb => cb.value);
+            
             items.push({
                 count: formData.get(`itemCount${i}`),
-                level: formData.get(`level${i}`),
+                level: selectedLevels, // now an array
                 invoice_type: formData.get(`invoice_type${i}`),
                 subgroup_language: formData.get(`subgroup_language${i}`),
                 national_id: formData.get(`national_id${i}`),
